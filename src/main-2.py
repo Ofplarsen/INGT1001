@@ -24,11 +24,15 @@ left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 
 # Initialize the drive base.
-robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=104)
+robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
 ev3.screen.print("Hello world!")
-for x in range(4):
-    robot.straight(500)
-    robot.turn(100)
+for x in range(1,5):
+    if x % 2 == 0:
+        robot.straight(500)
+    else:
+        robot.straight(1000)
+    robot.turn(90)
+
 ev3.speaker.say("Have a nice day")
 
