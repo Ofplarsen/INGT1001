@@ -42,6 +42,7 @@ while True:
                 ev3.screen.print(isOn)
                 isOn = False
                 bigBeeper()
-
+                break
+            
         robot.turn(20)
         robot.straight(-75)
