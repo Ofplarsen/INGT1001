@@ -43,4 +43,5 @@ while True:
                 isOn = False
                 bigBeeper()
 
-        robot.drive(-50,20)
+        robot.turn(20)
+        robot.straight(-75)
