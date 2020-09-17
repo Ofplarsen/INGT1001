@@ -7,10 +7,12 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
-# Initialize the EV3 Brick.
+# Objects
 ev3 = EV3Brick()
+ultrasonicS = UltrasonicSensor(Port.S2)
+touchS = TouchSensor(Port.S1)
 
-# Initialize the motors.
+# Initialize the motors
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 
