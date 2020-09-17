@@ -43,6 +43,7 @@ while True:
                 isOn = False
                 bigBeeper()
                 break
-            
+        if not isOn:
+            break
         robot.turn(20)
         robot.straight(-75)
