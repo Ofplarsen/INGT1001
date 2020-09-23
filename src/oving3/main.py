@@ -10,6 +10,9 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import random
 import time
 
+# Record time
+last_time = time.time()
+
 # Objects
 ev3 = EV3Brick()
 
@@ -24,6 +27,7 @@ ultrasonic_sensor = UltrasonicSensor(Port.S2)
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
+
 class EV3_devices:
     def __init__(self, robot = None, touch_sensor = None, color_sensor = None, infrared_sensor = None, ultrasonic_sensor = None, gyroscopic_sensor = None):
         self.robot = robot
@@ -34,7 +38,16 @@ class EV3_devices:
         self.gyroscopic_sensor = gyroscopic_sensor
 
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
+# Fargesensor ting
+def is_black():
+    RED = 50
+    GREEN = 50
+    BLUE = 50
 
+    (red, green, blue) = color_sensor.rgb()
+    return red < RED and green < GREEN and blue < BLUE
+
+"""
 def entertainment1(ev3_devices):
     pass
 
@@ -53,17 +66,35 @@ def do_random_entertainment(ev3_devices):
 
 def play_sound():
     pass
+"""
+def follow_track():  
+    if is_black():
+        ev3.screen.print("DRIVING")
+        robot.drive(70, 0)
 
-def follow_track():
-    pass
+    else:
+        ev3.screen.print("TURNING")
+        while not is_black():
+            robot.turn(1)
+
 
 while True:
     current_time = time.time()
     if current_time - last_time >= 10:
+        ev3.screen.print("10 SECONDS")
+        ev3.speaker.beep()
+        wait(2000)
+        last_time = time.time()
+        """
         do_random_entertainment(ev3_devices)
         last_time = time.time()
+        
     elif ultrasonic_sensor.distance() <= 200:
+        
         robot.stop()
         play_sound()
+        """
     else:
         follow_track()
+
+follow_track()
