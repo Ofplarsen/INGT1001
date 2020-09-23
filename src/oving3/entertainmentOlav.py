@@ -5,7 +5,7 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile
+from pybricks.media.ev3dev import SoundFile, ImageFile, Image, empty
 
 import random
 import time
@@ -25,8 +25,7 @@ ultrasonic_sensor = UltrasonicSensor(Port.S2)
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
-# Initialize the sounds
-sound_sneeze = SoundFile()
+# Initialize the image
 
 class EV3_devices:
     def __init__(self, robot = None, touch_sensor = None, color_sensor = None, infrared_sensor = None, ultrasonic_sensor = None, gyroscopic_sensor = None):
@@ -40,8 +39,10 @@ class EV3_devices:
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
 
 def entertainment1(ev3_devices):
+    Image("lego-tasks\\src\\oving3\\entOlav.png")
     motor_arm.run_time(100, 5, Stop.HOLD, False)
     ev3.speaker.say("Entertainment grrrrrrrr")
+    empty()
     pass
 
 def entertainment2(ev3_devices):
