@@ -38,41 +38,12 @@ class EV3_devices:
 
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
 
-def entertainment1(ev3_devices):
+def entertainment_olav(ev3_devices):
     ev3.screen.clear()
-    ev3.screen.Image("oving3\\ent_olav.png")
+    ev3.screen.Image("entOlav.png")
     motor_arm.run_time(100, 5, Stop.HOLD, False)
     ev3.speaker.say("Entertainment grrrrrrrr")
     time.sleep(5)
     ev3.screen.clear()
-    
-
-def entertainment2(ev3_devices):
     pass
 
-def entertainment3(ev3_devices):
-    pass
-
-def entertainment4(ev3_devices):
-    pass
-
-def do_random_entertainment(ev3_devices):
-    entertainments = [entertainment1, entertainment2, entertainment3, entertainment4]
-    random.choice(entertainments)(ev3_devices)
-
-def play_sound():
-    pass
-
-def follow_track():
-    pass
-
-while True:
-    current_time = time.time()
-    if current_time - last_time >= 10:
-        do_random_entertainment(ev3_devices)
-        last_time = time.time()
-    elif ultrasonic_sensor.distance() <= 200:
-        robot.stop()
-        play_sound()
-    else:
-        follow_track()
