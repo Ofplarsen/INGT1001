@@ -1,12 +1,10 @@
 #!/usr/bin/env pybricks-micropython
-from the color-sensor can have for the color to be defined as black
+
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
-                                 InfraredSensor, UltrasonicSensor, GyroSensor)
-from pybricks.parameters import Port, Stop, Direction, Button, Color
-from pybricks.tools import wait, StopWatch, DataLog
+from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
+from pybricks.parameters import Port, Color
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile, Image
+from pybricks.media import SoundFile
 
 import random
 import time
@@ -20,6 +18,7 @@ ev3 = EV3Brick()
 # Initialize the motors
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
+small_motor = Motor(Port.D)
 
 # Initialize the sensors
 color_sensor = ColorSensor(Port.S1)
@@ -30,33 +29,45 @@ RED = 50
 GREEN = 50
 BLUE = 50
 
-# Get the percentage of red, green, and blue color from the color-sensor
-(red, green, blue) = color_sensor.rgb()
-
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
 # Fargesensor ting
 def is_black():
-    RED = 50
-    GREEN = 50
-    BLUE = 50
-
     (red, green, blue) = color_sensor.rgb()
     return red < RED and green < GREEN and blue < BLUE
 
-"""
-def entertainment1(ev3_devices):
-    pass
+def entertainment1(): # Vetle
+    small_motor.run(1000)
+    notes = list()
+    for i in range(2, 8):
+        for n in ["G", "F", "E", "D", "C", "B", "A"]:
+            notes.append(n + str(i) + "/8")
+    ev3.speaker.set_volume(100)
+    ev3.speaker.play_notes(notes, tempo=120)
+    small_motor.stop()
 
-def entertainment2():
-    pass
+def entertainment2(): # Olav
+    ev3.screen.clear()
+    ev3.screen.load_image("ent_olav.png")
+    ev3.speaker.say("Love yourself")
+    time.sleep(5)
+    ev3.screen.clear()
 
-def entertainment3():
-    pass
+def entertainment3(): # William
+    ev3.screen.clear()
+    ev3.screen.draw_text(20, 250, 'Bad time xd', text_color = Color.BLACK, background_color = None)
+    ev3.screen.clear()
+    ev3.speaker.play_notes(['D4/4', 'D4/4', 'D5/4', 'D4/4.', 'A4/4', 'G#4/4', 'G4/4', 'F4/4', 'D4/4_', 'F4/4_', 'G4/4_'], tempo = 400)
 
 def entertainment4():
-    pass
+    ev3.speaker.set_volume(100)
+    ev3.screen.clear()
+    ev3.screen.print("Obama Chicken")
+    ev3.speaker.say("Hello, I am President Obama.")
+    ev3.speaker.play_notes(['C5/4','E5/4.','A5/4', 'C5/4', 'C5/4','R/4', 'E5/4', 'A5/4', 'E5/4', 'B4/4','E5/4','A5/4','B4/4','R/4','E5/4','G5/4','E5/4','C5/4','E5/4'], 93)
+    ev3.screen.clear()
+
 
 def do_random_entertainment():
     entertainments = [entertainment1, entertainment2, entertainment3, entertainment4]
@@ -64,8 +75,8 @@ def do_random_entertainment():
 
 
 def play_sound():
-    pass
-"""
+    ev3.speaker.play_file(SoundFile.FANFARE)
+
 
 def follow_track():  
     if is_black():
@@ -80,16 +91,12 @@ def follow_track():
 while True:
     current_time = time.time()
     if current_time - last_time >= 10:
-        ev3.screen.print("10 SECONDS")
-        ev3.speaker.beep()
-        wait(2000)
-        
-        #do_random_entertainment(ev3_devices)
+        do_random_entertainment()
         last_time = time.time()
         
     elif ultrasonic_sensor.distance() <= 200:
         robot.stop()
-        #play_sound()
+        play_sound()
         
     else:
         follow_track()
