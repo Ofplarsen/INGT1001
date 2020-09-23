@@ -27,18 +27,6 @@ ultrasonic_sensor = UltrasonicSensor(Port.S2)
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
-
-class EV3_devices:
-    def __init__(self, robot = None, touch_sensor = None, color_sensor = None, infrared_sensor = None, ultrasonic_sensor = None, gyroscopic_sensor = None):
-        self.robot = robot
-        self.touch_sensor = touch_sensor
-        self.color_sensor = color_sensor
-        self.infrared_sensor = infrared_sensor
-        self.ultrasonic_sensor = ultrasonic_sensor
-        self.gyroscopic_sensor = gyroscopic_sensor
-
-ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
-
 # Fargesensor ting
 def is_black():
     RED = 50
@@ -77,7 +65,7 @@ def follow_track():
     else:
         ev3.screen.print("TURNING")
         while not is_black():
-            robot.turn(-5)
+            robot.turn(-2)
 
 while True:
     current_time = time.time()
