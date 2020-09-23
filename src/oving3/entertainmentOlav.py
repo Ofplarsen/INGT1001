@@ -39,10 +39,12 @@ class EV3_devices:
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
 
 def entertainment1(ev3_devices):
-    Image("lego-tasks\\src\\oving3\\entOlav.png")
+    ev3.screen.clear()
+    ev3.screen.Image("lego-tasks\\src\\oving3\\entOlav.png")
     motor_arm.run_time(100, 5, Stop.HOLD, False)
     ev3.speaker.say("Entertainment grrrrrrrr")
-    empty()
+    time.sleep(5)
+    ev3.screen.clear()
     pass
 
 def entertainment2(ev3_devices):
