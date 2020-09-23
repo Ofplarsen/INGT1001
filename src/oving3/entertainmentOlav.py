@@ -41,7 +41,7 @@ ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sen
 
 def entertainment1(ev3_devices):
     motor_arm.run_time(100, 5, Stop.HOLD, False)
-    
+    ev3.speaker.say("Entertainment grrrrrrrr")
     pass
 
 def entertainment2(ev3_devices):
