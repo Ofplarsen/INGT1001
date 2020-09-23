@@ -17,12 +17,12 @@ small_motor = Motor(Port.D)
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
 def entertainment_vetle():
-    small_motor.run(100)
+    small_motor.run(1000)
     notes = list()
     for i in range(2, 8):
         for n in ["G", "F", "E", "D", "C", "B", "A"]:
             notes.append(n + str(i) + "/8")
-    ev3.speaker.set_volume(1000)
+    ev3.speaker.set_volume(100)
     ev3.speaker.play_notes(notes, tempo=120)
     small_motor.stop()
 
