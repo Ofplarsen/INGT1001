@@ -38,11 +38,10 @@ class EV3_devices:
 
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
 
-def entertainment1(ev3_devices):
+def entertainment1():
     ev3.screen.clear()
-    ev3.screen.Image("oving3\\ent_olav.png")
-    motor_arm.run_time(100, 5, Stop.HOLD, False)
-    ev3.speaker.say("Entertainment grrrrrrrr")
+    ev3.screen.load_image("ent_olav.png")
+    ev3.speaker.say("Love yourself")
     time.sleep(5)
     ev3.screen.clear()
     
