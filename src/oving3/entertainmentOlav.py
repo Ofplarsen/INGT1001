@@ -45,5 +45,5 @@ def entertainment_olav(ev3_devices):
     ev3.speaker.say("Entertainment grrrrrrrr")
     time.sleep(5)
     ev3.screen.clear()
-    pass
+    
 
