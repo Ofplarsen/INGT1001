@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-ev3 = EV3Brick()
-small_motor = Motor(Port.D)
-
-def entertainment_vetle():
-    small_motor.run(1000)
-    notes = list()
-    for i in range(2, 9):
-        for n in ['G', 'F', 'E', 'D', 'C', 'B', 'A']:
-            notes.append(n + str(n) + '/8')
-    ev3.speaker.set_volume(100)
-    ev3.speaker.bee.play_notes(notes, tempo=120)
-    small_motor.stop()
-=======
 #!/usr/bin/env pybricks-micropython
 
 from pybricks.hubs import EV3Brick
@@ -41,4 +27,3 @@ def entertainment_vetle():
     small_motor.stop()
 
 entertainment_vetle()
->>>>>>> 35c2bab99fb78fb25e068dd815cbce9ab31d6287
