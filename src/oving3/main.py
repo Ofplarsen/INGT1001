@@ -4,7 +4,7 @@ from pybricks.hubs import EV3Brick
 from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
 from pybricks.parameters import Port, Color
 from pybricks.robotics import DriveBase
-from pybricks.media import SoundFile
+from pybricks.media.ev3dev import SoundFile
 
 import random
 import time
@@ -65,7 +65,7 @@ def entertainment4():
     ev3.screen.clear()
     ev3.screen.print("Obama Chicken")
     ev3.speaker.say("Hello, I am President Obama.")
-    ev3.speaker.play_notes(['C5/4','E5/4.','A5/4', 'C5/4', 'C5/4','R/4', 'E5/4', 'A5/4', 'E5/4', 'B4/4','E5/4','A5/4','B4/4','R/4','E5/4','G5/4','E5/4','C5/4','E5/4'], 93)
+    ev3.speaker.play_notes(['C5/4','E5/4.','A5/4', 'C5/4', 'C5/4','R/4', 'E5/4', 'A5/4', 'E5/4', 'B4/4','E5/4','A5/4','B4/4','R/4','E5/4','G5/4','E5/4','C5/4','E5/4'], 250)
     ev3.screen.clear()
 
 
@@ -81,22 +81,23 @@ def play_sound():
 def follow_track():  
     if is_black():
         ev3.screen.print("DRIVING")
-        robot.drive(55, 0)
+        robot.drive(50, 0)
 
     else:
         ev3.screen.print("TURNING")
-        while not is_black():
-            robot.turn(-2)
+        robot.turn(-2)
 
 while True:
     current_time = time.time()
-    if current_time - last_time >= 10:
-        do_random_entertainment()
-        last_time = time.time()
-        
-    elif ultrasonic_sensor.distance() <= 200:
+
+    if ultrasonic_sensor.distance() <= 200:
         robot.stop()
         play_sound()
+
+    elif current_time - last_time >= 10:
+        robot.stop()
+        do_random_entertainment()
+        last_time = time.time()
         
     else:
         follow_track()
