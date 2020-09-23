@@ -40,6 +40,7 @@ ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sen
 
 def entertainment_olav(ev3_devices):
     ev3.screen.clear()
+    ev3.screen.Image("entOlav.png")
     motor_arm.run_time(100, 5, Stop.HOLD, False)
     ev3.speaker.say("Entertainment grrrrrrrr")
     time.sleep(5)
