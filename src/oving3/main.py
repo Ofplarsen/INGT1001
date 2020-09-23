@@ -5,7 +5,7 @@ from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
 from pybricks.parameters import Port, Stop, Direction, Button, Color
 from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile, ImageFile
+from pybricks.media.ev3dev import SoundFile, ImageFile, Image
 
 import random
 import time
@@ -38,6 +38,7 @@ class EV3_devices:
         self.gyroscopic_sensor = gyroscopic_sensor
 
 ev3_devices = EV3_devices(robot=robot, color_sensor=color_sensor, ultrasonic_sensor=ultrasonic_sensor)
+
 # Fargesensor ting
 def is_black():
     RED = 50
@@ -51,32 +52,32 @@ def is_black():
 def entertainment1(ev3_devices):
     pass
 
-def entertainment2(ev3_devices):
+def entertainment2():
     pass
 
-def entertainment3(ev3_devices):
+def entertainment3():
     pass
 
-def entertainment4(ev3_devices):
+def entertainment4():
     pass
 
-def do_random_entertainment(ev3_devices):
+def do_random_entertainment():
     entertainments = [entertainment1, entertainment2, entertainment3, entertainment4]
-    random.choice(entertainments)(ev3_devices)
+    random.choice(entertainments)()
 
 def play_sound():
     pass
 """
+
 def follow_track():  
     if is_black():
         ev3.screen.print("DRIVING")
-        robot.drive(70, 0)
+        robot.drive(55, 0)
 
     else:
         ev3.screen.print("TURNING")
         while not is_black():
-            robot.turn(1)
-
+            robot.turn(-5)
 
 while True:
     current_time = time.time()
@@ -84,17 +85,13 @@ while True:
         ev3.screen.print("10 SECONDS")
         ev3.speaker.beep()
         wait(2000)
-        last_time = time.time()
-        """
-        do_random_entertainment(ev3_devices)
+        
+        #do_random_entertainment(ev3_devices)
         last_time = time.time()
         
     elif ultrasonic_sensor.distance() <= 200:
-        
         robot.stop()
-        play_sound()
-        """
+        #play_sound()
+        
     else:
         follow_track()
-
-follow_track()
