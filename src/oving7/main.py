@@ -1,9 +1,7 @@
 #!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import (Motor, TouchSensor, ColorSensor,
-                                 InfraredSensor, UltrasonicSensor, GyroSensor)
-from pybricks.parameters import Port, Stop, Direction, Button, Color
-from pybricks.tools import wait, StopWatch, DataLog
+from pybricks.ev3devices import Motor
+from pybricks.parameters import Port
 from pybricks.robotics import DriveBase
 
 # Objects
@@ -24,5 +22,4 @@ ev3.screen.print("Obama Chicken")
 ev3.speaker.say("Hello, I am President Obama.")
 ev3.play.notes(['C4_','C4_','G4.'], 90)
 ev3.small_motor.run(30)
-wait(2000)
 ev3.screen.clear()
