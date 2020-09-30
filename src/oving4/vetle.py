@@ -31,22 +31,29 @@ def is_black(color_sensor):
     (red, green, blue) = color_sensor.rgb()
     return red < RED and green < GREEN and blue < BLUE
 
-def follow_track(rotation):
+rotation = 0
+
+def follow_track():
+    global rotation
+
     left_is_black = is_black(left_color_sensor)
     right_is_black = is_black(right_color_sensor)
     
+    speed = 175
+
     if left_is_black == right_is_black:
         rotation = 0
+        ev3.screen.clear()
     elif left_is_black:
-        rotation -= 2
-        ev3.screen.print("Venstre er svart")
+        rotation -= 12
+        speed = 65
+        ev3.screen.print("Venstre")
     else:
-        rotation += 2
-        ev3.screen.print("Høyre er svart")
+        rotation += 12
+        speed = 65
+        ev3.screen.print("Høyre")
     
-    robot.drive(100, rotation)
-    return rotation
+    robot.drive(speed, rotation)
 
-rotation = 0
 while True:
-    rotation = follow_track(rotation)
+    follow_track()
