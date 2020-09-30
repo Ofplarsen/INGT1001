@@ -20,13 +20,13 @@ left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
 
 # Initialize the sensors
-color_sensor_1 = ColorSensor(Port.S1)
-color_sensor_2 = ColorSensor(Port.S4)
+left_color_sensor = ColorSensor(Port.S4)
+right_color_sensor = ColorSensor(Port.S1)
 
 # Global variables that defines the maximum RGB-values a sensor-reading
-RED = 10
-GREEN = 10
-BLUE = 10
+RED = 25
+GREEN = 25
+BLUE = 25
 
 # Initialize the drive base.
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
@@ -43,20 +43,60 @@ def play_sound():
     ev3.speaker.play_file(SoundFile.FANFARE)
 
 
+def check_values(sensor):
+    (red, green, blue) = sensor.rgb()
+    ev3.screen.clear()
+
+    ev3.screen.print("R: " + str(red))
+    ev3.screen.print("G: " + str(green))
+    ev3.screen.print("B: " + str(blue))
+
+
+turnCounter = 0
+speed = 0
 rotation = 0
+
+
 def follow_track():
-    if is_black(color_sensor_1):
-        ev3.screen.print("SENSOR 1 TRIGGERED")
-        rotaio
+    global turnCounter
+    global speed
+    global rotation
 
-    elif is_black(color_sensor_2):
-        ev3.screen.print("SENSOR 2 TRIGGERED")
-        robot.turn(2)
+    left_is_black = is_black(left_color_sensor)
+    right_is_black = is_black(right_color_sensor)
 
-    else:
-        robot.drive(1000, 0)
+    if (not left_is_black and not right_is_black):
+        ev3.screen.print("FORWARD")
+        speed = 60
+        rotation = 0
+        turnCounter = 0
+
+    elif left_is_black:
+        ev3.screen.print(str(turnCounter))
+        turnCounter += 1
+        if (turnCounter < 30):
+            speed = 30
+            rotation = -5
+            ev3.screen.print("LEFT:")
+        else:
+            speed = 10
+            rotation = -15
+            ev3.screen.print("HARD LEFT:")
+
+    elif right_is_black:
+        ev3.screen.print(str(turnCounter))
+        turnCounter += 1
+        if (turnCounter < 30):
+            speed = 30
+            rotation = 5
+            ev3.screen.print("RIGHT:")
+        else:
+            speed = 10
+            rotation = 15
+            ev3.screen.print("HARD RIGHT:")
+
+    robot.drive(speed, rotation)
 
 
 while True:
-    current_time = time.time()
     follow_track()
