@@ -1,102 +1,99 @@
 #!/usr/bin/env pybricks-micropython
 
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor, ColorSensor, UltrasonicSensor
-from pybricks.parameters import Port, Color
+from pybricks.ev3devices import Motor, TouchSensor, ColorSensor, InfraredSensor, UltrasonicSensor, GyroSensor
+from pybricks.parameters import Port, Stop, Direction, Button, Color
+from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
-from pybricks.media.ev3dev import SoundFile
+from pybricks.media.ev3dev import SoundFile, ImageFile
 
-import random
 import time
 
-# Record time
-last_time = time.time()
-
-# Objects
-ev3 = EV3Brick()
-
-# Initialize the motors
-left_motor = Motor(Port.B)
-right_motor = Motor(Port.C)
-
-# Initialize the sensors
-left_color_sensor = ColorSensor(Port.S4)
-right_color_sensor = ColorSensor(Port.S1)
-
 # Global variables that defines the maximum RGB-values a sensor-reading
-RED = 25
-GREEN = 25
-BLUE = 25
+RED = 20
+GREEN = 20
+BLUE = 40
 
-# Initialize the drive base.
-robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
+STRAIGHT_SPEED = 100
+SWING_SPEED = 50
+SWING_ROTATION = 2
 
-# Fargesensor ting
+class RallyCar:    
+    # Objects
+    ev3 = EV3Brick()
 
+    # Initialize the motors
+    left_motor = Motor(Port.B)
+    right_motor = Motor(Port.C)
 
-def is_black(sensor):
-    (red, green, blue) = sensor.rgb()
-    return red < RED and green < GREEN and blue < BLUE
+    # Initialize the sensors
+    left_color_sensor = ColorSensor(Port.S4)
+    right_color_sensor = ColorSensor(Port.S1)
 
+    # Initialize the drive base.
+    robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
-def play_sound():
-    ev3.speaker.play_file(SoundFile.FANFARE)
+    speed = STRAIGHT_SPEED
+    rotation = 0
+    left_time = None
+    right_time = None
 
+    # Fargesensor ting
+    def is_black(self, color_sensor):
+        (red, green, blue) = color_sensor.rgb()
+        return red < RED and green < GREEN and blue < BLUE
 
-def check_values(sensor):
-    (red, green, blue) = sensor.rgb()
-    ev3.screen.clear()
+    def cross_intersection(self):
+        self.robot.stop()
+        self.robot.straight(100)
 
-    ev3.screen.print("R: " + str(red))
-    ev3.screen.print("G: " + str(green))
-    ev3.screen.print("B: " + str(blue))
-
-
-turnCounter = 0
-speed = 0
-rotation = 0
-
-
-def follow_track():
-    global turnCounter
-    global speed
-    global rotation
-
-    left_is_black = is_black(left_color_sensor)
-    right_is_black = is_black(right_color_sensor)
-
-    if (not left_is_black and not right_is_black):
-        ev3.screen.print("FORWARD")
-        speed = 60
-        rotation = 0
-        turnCounter = 0
-
-    elif left_is_black:
-        ev3.screen.print(str(turnCounter))
-        turnCounter += 1
-        if (turnCounter < 30):
-            speed = 30
-            rotation = -5
-            ev3.screen.print("LEFT:")
+        angle = 0
+        if self.left_time < self.right_time:
+            angle = 2 # Turn right
         else:
-            speed = 10
-            rotation = -15
-            ev3.screen.print("HARD LEFT:")
+            angle = -2 # Turn left
 
-    elif right_is_black:
-        ev3.screen.print(str(turnCounter))
-        turnCounter += 1
-        if (turnCounter < 30):
-            speed = 30
-            rotation = 5
-            ev3.screen.print("RIGHT:")
+        while not self.is_black(self.left_color_sensor) and not self.is_black(self.right_color_sensor):
+            self.robot.turn(angle)
+
+        while self.is_black(self.left_color_sensor) or self.is_black(self.right_color_sensor):
+            self.robot.turn(angle)
+
+        self.rotation = 0
+        self.left_time = None
+        self.right_time = None
+
+    def is_at_intersection(self):
+        if self.left_time == None or self.right_time == None:
+            return False
         else:
-            speed = 10
-            rotation = 15
-            ev3.screen.print("HARD RIGHT:")
+            return abs(self.left_time - self.right_time) < 0.5
 
-    robot.drive(speed, rotation)
+    # Ta sensorene lengre fra hverandre?
 
+    def follow_track(self):
+        left_is_black = self.is_black(self.left_color_sensor)
+        right_is_black = self.is_black(self.right_color_sensor)
+        
+        if left_is_black == right_is_black:
+            self.rotation = 0
+            self.speed = STRAIGHT_SPEED
+            
+        if left_is_black:
+            self.rotation -= SWING_ROTATION
+            self.speed = SWING_SPEED
+            self.left_time = time.time()
 
+        if right_is_black:
+            self.rotation += SWING_ROTATION
+            self.speed = SWING_SPEED
+            self.right_time = time.time()
+
+        if self.is_at_intersection():
+            self.cross_intersection()
+        else:
+            self.robot.drive(self.speed, self.rotation)
+
+rally_car = RallyCar()
 while True:
-    follow_track()
+    rally_car.follow_track()
