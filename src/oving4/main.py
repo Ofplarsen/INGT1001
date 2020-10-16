@@ -7,16 +7,18 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
-import time
-
 # Global variables that defines the maximum RGB-values a sensor-reading
 RED = 20
 GREEN = 20
 BLUE = 40
 
-STRAIGHT_SPEED = 100
-SWING_SPEED = 50
-SWING_ROTATION = 2
+MAX_SPEED = 250
+MIN_SPEED = 100
+
+MAX_ROTATION_SPEED = 100
+
+ACCELERATION = 1
+ROTATION_ACCELERATION = 5
 
 class RallyCar:    
     # Objects
@@ -27,72 +29,61 @@ class RallyCar:
     right_motor = Motor(Port.C)
 
     # Initialize the sensors
-    left_color_sensor = ColorSensor(Port.S4)
-    right_color_sensor = ColorSensor(Port.S1)
+    on_line_color_sensor = ColorSensor(Port.S4)
+    off_line_color_sensor = ColorSensor(Port.S1)
+
+    touch_sensor = TouchSensor(Port.S2)
 
     # Initialize the drive base.
     robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=138)
 
-    speed = STRAIGHT_SPEED
-    rotation = 0
-    left_time = None
-    right_time = None
+    speed = MAX_SPEED / 2
+    rotation_speed = 0
+
+    left_is_on_line = True
+    ev3.screen.clear()
+    ev3.screen.print("Mot klokka")
+
+    def swap_color_sensors(self):
+        temp = self.on_line_color_sensor
+        self.on_line_color_sensor = self.off_line_color_sensor
+        self.off_line_color_sensor = temp
 
     # Fargesensor ting
     def is_black(self, color_sensor):
         (red, green, blue) = color_sensor.rgb()
         return red < RED and green < GREEN and blue < BLUE
 
-    def cross_intersection(self):
-        self.robot.stop()
-        self.robot.straight(100)
-
-        angle = 0
-        if self.left_time < self.right_time:
-            angle = 2 # Turn right
-        else:
-            angle = -2 # Turn left
-
-        while not self.is_black(self.left_color_sensor) and not self.is_black(self.right_color_sensor):
-            self.robot.turn(angle)
-
-        while self.is_black(self.left_color_sensor) or self.is_black(self.right_color_sensor):
-            self.robot.turn(angle)
-
-        self.rotation = 0
-        self.left_time = None
-        self.right_time = None
-
-    def is_at_intersection(self):
-        if self.left_time == None or self.right_time == None:
-            return False
-        else:
-            return abs(self.left_time - self.right_time) < 0.5
-
-    # Ta sensorene lengre fra hverandre?
-
     def follow_track(self):
-        left_is_black = self.is_black(self.left_color_sensor)
-        right_is_black = self.is_black(self.right_color_sensor)
+        on_line_is_black = self.is_black(self.on_line_color_sensor)
+        off_line_is_black = self.is_black(self.off_line_color_sensor)
         
-        if left_is_black == right_is_black:
-            self.rotation = 0
-            self.speed = STRAIGHT_SPEED
-            
-        if left_is_black:
-            self.rotation -= SWING_ROTATION
-            self.speed = SWING_SPEED
-            self.left_time = time.time()
+        if on_line_is_black:
+            self.speed = min(self.speed + ACCELERATION, MAX_SPEED)
+            self.rotation_speed = 0
 
-        if right_is_black:
-            self.rotation += SWING_ROTATION
-            self.speed = SWING_SPEED
-            self.right_time = time.time()
+        elif off_line_is_black == self.left_is_on_line:
+            self.speed = max(self.speed - ACCELERATION, MIN_SPEED)
+            self.rotation_speed = max(self.rotation_speed, 0)
+            self.rotation_speed += ROTATION_ACCELERATION
+            self.rotation_speed = min(self.rotation_speed, MAX_ROTATION_SPEED)
 
-        if self.is_at_intersection():
-            self.cross_intersection()
         else:
-            self.robot.drive(self.speed, self.rotation)
+            self.speed = max(self.speed - ACCELERATION, MIN_SPEED)
+            self.rotation_speed = min(self.rotation_speed, 0)
+            self.rotation_speed -= ROTATION_ACCELERATION
+            self.rotation_speed = max(self.rotation_speed, -MAX_ROTATION_SPEED)
+
+        self.robot.drive(self.speed, self.rotation_speed)
+
+        if self.touch_sensor.pressed():
+            self.left_is_on_line = not self.left_is_on_line
+            self.swap_color_sensors()
+            self.ev3.screen.clear()
+            if self.left_is_on_line:
+                self.ev3.screen.print("Mot klokka")
+            else:
+                self.ev3.screen.print("Med klokka")
 
 rally_car = RallyCar()
 while True:
